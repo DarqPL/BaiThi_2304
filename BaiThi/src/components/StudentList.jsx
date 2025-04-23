@@ -53,25 +53,45 @@ const StudentList = () => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
   };
 
+  const [selectedClass, setSelectedClass] = useState("Tất cả");
   // 🔍 Lọc danh sách sinh viên theo tên
-  const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredStudents = students.filter((student) => {
+    const matchesName = student.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesClass = selectedClass === "Tất cả" || student.class === selectedClass;
+    return matchesName && matchesClass;
+  });
+  
+  
+
 
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Danh sách sinh viên</h2>
 
       {/* Tìm kiếm */}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Tìm kiếm theo tên..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border p-2 rounded w-full"
-        />
-      </div>
+      <div className="mb-4 flex gap-4">
+  <select
+    value={selectedClass}
+    onChange={(e) => setSelectedClass(e.target.value)}
+    className="border p-2 rounded"
+  >
+    <option value="Tất cả">Tất cả lớp</option>
+    {[...new Set(students.map((s) => s.class))].map((cls) => (
+      <option key={cls} value={cls}>
+        {cls}
+      </option>
+    ))}
+  </select>
+
+  <input
+    type="text"
+    placeholder="Tìm kiếm theo tên..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="border p-2 rounded w-full"
+  />
+</div>
+
 
       {/* Form thêm sinh viên */}
       <div className="mb-4 grid grid-cols-4 gap-2">
