@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import StudentItem from "./StudentItem";
 
 const StudentList = () => {
     const [students, setStudents] = useState(() => {
@@ -145,74 +146,20 @@ const StudentList = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredStudents.map((student) => (
-            <tr key={student.id} className="text-center">
-              {editingId === student.id ? (
-                <>
-                  <td className="border p-2">
-                    <input
-                      name="name"
-                      value={editData.name}
-                      onChange={handleEditChange}
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="border p-2">
-                    <input
-                      name="class"
-                      value={editData.class}
-                      onChange={handleEditChange}
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="border p-2">
-                    <input
-                      type="number"
-                      name="age"
-                      value={editData.age}
-                      onChange={handleEditChange}
-                      className="border p-1 rounded w-full"
-                    />
-                  </td>
-                  <td className="border p-2 flex gap-2 justify-center">
-                    <button
-                      onClick={handleSaveEdit}
-                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                    >
-                      Lưu
-                    </button>
-                    <button
-                      onClick={handleCancelEdit}
-                      className="bg-gray-400 text-white px-2 py-1 rounded hover:bg-gray-500"
-                    >
-                      Huỷ
-                    </button>
-                  </td>
-                </>
-              ) : (
-                <>
-                  <td className="border p-2">{student.name}</td>
-                  <td className="border p-2">{student.class}</td>
-                  <td className="border p-2">{student.age}</td>
-                  <td className="border p-2 flex gap-2 justify-center">
-                    <button
-                      onClick={() => handleEdit(student)}
-                      className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-                    >
-                      Sửa
-                    </button>
-                    <button
-                      onClick={() => handleDeleteStudent(student.id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                    >
-                      Xoá
-                    </button>
-                  </td>
-                </>
-              )}
-            </tr>
-          ))}
-        </tbody>
+  {filteredStudents.map((student) => (
+    <StudentItem
+      key={student.id}
+      student={student}
+      isEditing={editingId === student.id}
+      editData={editData}
+      onEditChange={handleEditChange}
+      onEdit={handleEdit}
+      onSave={handleSaveEdit}
+      onCancel={handleCancelEdit}
+      onDelete={handleDeleteStudent}
+    />
+  ))}
+</tbody>
       </table>
     </div>
   );
