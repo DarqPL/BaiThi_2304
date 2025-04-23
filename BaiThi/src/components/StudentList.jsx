@@ -1,11 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const StudentList = () => {
-  const [students, setStudents] = useState([
-    { id: 1, name: "Nguyễn Văn A", class: "12A1", age: 18 },
-    { id: 2, name: "Trần Thị B", class: "12A2", age: 17 },
-    { id: 3, name: "Lê Văn C", class: "11B1", age: 16 },
-  ]);
+    const [students, setStudents] = useState(() => {
+        const saved = localStorage.getItem("students");
+        return saved ? JSON.parse(saved) : [
+          { id: 1, name: "Nguyễn Văn A", class: "12A1", age: 18 },
+          { id: 2, name: "Trần Thị B", class: "12A2", age: 17 },
+          { id: 3, name: "Lê Văn C", class: "11B1", age: 16 },
+        ];
+      });
+
+      useEffect(() => {
+        localStorage.setItem("students", JSON.stringify(students));
+      }, [students]);
 
   const [newStudent, setNewStudent] = useState({ name: "", class: "", age: "" });
   const [editingId, setEditingId] = useState(null);
