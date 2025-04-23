@@ -17,8 +17,14 @@ const StudentList = () => {
     if (newStudent.name && newStudent.class && newStudent.age) {
       const newId = students.length ? students[students.length - 1].id + 1 : 1;
       setStudents([...students, { id: newId, ...newStudent, age: Number(newStudent.age) }]);
-      setNewStudent({ name: "", class: "", age: "" }); // reset form
+      setNewStudent({ name: "", class: "", age: "" });
     }
+  };
+
+  // ✅ Hàm xoá sinh viên
+  const handleDeleteStudent = (id) => {
+    const updatedList = students.filter(student => student.id !== id);
+    setStudents(updatedList);
   };
 
   return (
@@ -76,7 +82,10 @@ const StudentList = () => {
               <td className="border border-gray-300 p-2">{student.class}</td>
               <td className="border border-gray-300 p-2">{student.age}</td>
               <td className="border border-gray-300 p-2">
-                <button className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">
+                <button
+                  onClick={() => handleDeleteStudent(student.id)}
+                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                >
                   Xoá
                 </button>
               </td>
