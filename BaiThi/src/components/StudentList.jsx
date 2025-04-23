@@ -8,6 +8,8 @@ const StudentList = () => {
   ]);
 
   const [newStudent, setNewStudent] = useState({ name: "", class: "", age: "" });
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({ name: "", class: "", age: "" });
 
   const handleChange = (e) => {
     setNewStudent({ ...newStudent, [e.target.name]: e.target.value });
@@ -21,10 +23,36 @@ const StudentList = () => {
     }
   };
 
-  // ✅ Hàm xoá sinh viên
   const handleDeleteStudent = (id) => {
-    const updatedList = students.filter(student => student.id !== id);
-    setStudents(updatedList);
+    setStudents(students.filter((student) => student.id !== id));
+  };
+
+  // 👉 Bắt đầu sửa
+  const handleEdit = (student) => {
+    setEditingId(student.id);
+    setEditData({ name: student.name, class: student.class, age: student.age });
+  };
+
+  // 👉 Huỷ sửa
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditData({ name: "", class: "", age: "" });
+  };
+
+  // 👉 Cập nhật dữ liệu
+  const handleSaveEdit = () => {
+    setStudents(
+      students.map((student) =>
+        student.id === editingId
+          ? { ...student, ...editData, age: Number(editData.age) }
+          : student
+      )
+    );
+    handleCancelEdit();
+  };
+
+  const handleEditChange = (e) => {
+    setEditData({ ...editData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -65,7 +93,7 @@ const StudentList = () => {
         </button>
       </div>
 
-      {/* Bảng danh sách sinh viên */}
+      {/* Bảng danh sách */}
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-200">
@@ -78,17 +106,69 @@ const StudentList = () => {
         <tbody>
           {students.map((student) => (
             <tr key={student.id} className="text-center">
-              <td className="border border-gray-300 p-2">{student.name}</td>
-              <td className="border border-gray-300 p-2">{student.class}</td>
-              <td className="border border-gray-300 p-2">{student.age}</td>
-              <td className="border border-gray-300 p-2">
-                <button
-                  onClick={() => handleDeleteStudent(student.id)}
-                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                >
-                  Xoá
-                </button>
-              </td>
+              {editingId === student.id ? (
+                <>
+                  <td className="border p-2">
+                    <input
+                      name="name"
+                      value={editData.name}
+                      onChange={handleEditChange}
+                      className="border p-1 rounded w-full"
+                    />
+                  </td>
+                  <td className="border p-2">
+                    <input
+                      name="class"
+                      value={editData.class}
+                      onChange={handleEditChange}
+                      className="border p-1 rounded w-full"
+                    />
+                  </td>
+                  <td className="border p-2">
+                    <input
+                      type="number"
+                      name="age"
+                      value={editData.age}
+                      onChange={handleEditChange}
+                      className="border p-1 rounded w-full"
+                    />
+                  </td>
+                  <td className="border p-2 flex gap-2 justify-center">
+                    <button
+                      onClick={handleSaveEdit}
+                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                    >
+                      Lưu
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      className="bg-gray-400 text-white px-2 py-1 rounded hover:bg-gray-500"
+                    >
+                      Huỷ
+                    </button>
+                  </td>
+                </>
+              ) : (
+                <>
+                  <td className="border border-gray-300 p-2">{student.name}</td>
+                  <td className="border border-gray-300 p-2">{student.class}</td>
+                  <td className="border border-gray-300 p-2">{student.age}</td>
+                  <td className="border border-gray-300 p-2 flex gap-2 justify-center">
+                    <button
+                      onClick={() => handleEdit(student)}
+                      className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      onClick={() => handleDeleteStudent(student.id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                    >
+                      Xoá
+                    </button>
+                  </td>
+                </>
+              )}
             </tr>
           ))}
         </tbody>
