@@ -10,6 +10,7 @@ const StudentList = () => {
   const [newStudent, setNewStudent] = useState({ name: "", class: "", age: "" });
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({ name: "", class: "", age: "" });
+  const [searchTerm, setSearchTerm] = useState(""); // 🔍 input tìm kiếm
 
   const handleChange = (e) => {
     setNewStudent({ ...newStudent, [e.target.name]: e.target.value });
@@ -27,19 +28,16 @@ const StudentList = () => {
     setStudents(students.filter((student) => student.id !== id));
   };
 
-  // 👉 Bắt đầu sửa
   const handleEdit = (student) => {
     setEditingId(student.id);
     setEditData({ name: student.name, class: student.class, age: student.age });
   };
 
-  // 👉 Huỷ sửa
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditData({ name: "", class: "", age: "" });
   };
 
-  // 👉 Cập nhật dữ liệu
   const handleSaveEdit = () => {
     setStudents(
       students.map((student) =>
@@ -55,9 +53,25 @@ const StudentList = () => {
     setEditData({ ...editData, [e.target.name]: e.target.value });
   };
 
+  // 🔍 Lọc danh sách sinh viên theo tên
+  const filteredStudents = students.filter((student) =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="p-4">
       <h2 className="text-xl font-bold mb-4">Danh sách sinh viên</h2>
+
+      {/* Tìm kiếm */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Tìm kiếm theo tên..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border p-2 rounded w-full"
+        />
+      </div>
 
       {/* Form thêm sinh viên */}
       <div className="mb-4 grid grid-cols-4 gap-2">
@@ -104,7 +118,7 @@ const StudentList = () => {
           </tr>
         </thead>
         <tbody>
-          {students.map((student) => (
+          {filteredStudents.map((student) => (
             <tr key={student.id} className="text-center">
               {editingId === student.id ? (
                 <>
@@ -150,10 +164,10 @@ const StudentList = () => {
                 </>
               ) : (
                 <>
-                  <td className="border border-gray-300 p-2">{student.name}</td>
-                  <td className="border border-gray-300 p-2">{student.class}</td>
-                  <td className="border border-gray-300 p-2">{student.age}</td>
-                  <td className="border border-gray-300 p-2 flex gap-2 justify-center">
+                  <td className="border p-2">{student.name}</td>
+                  <td className="border p-2">{student.class}</td>
+                  <td className="border p-2">{student.age}</td>
+                  <td className="border p-2 flex gap-2 justify-center">
                     <button
                       onClick={() => handleEdit(student)}
                       className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
